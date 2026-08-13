@@ -84,6 +84,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Victoria & Daniel — Private Wedding Invitation" },
+      { name: "twitter:title", content: "Victoria & Daniel — Private Wedding Invitation" },
+      { property: "og:description", content: "A private wedding invitation. Enter your personal access code to view the details and RSVP." },
+      { name: "twitter:description", content: "A private wedding invitation. Enter your personal access code to view the details and RSVP." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/86ac32032faa6960859d5f2aacb839fc/id-preview-1c46843b--d3566e74-8465-4e24-b234-3e7cf382005b.lovable.app-1786645294385.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/86ac32032faa6960859d5f2aacb839fc/id-preview-1c46843b--d3566e74-8465-4e24-b234-3e7cf382005b.lovable.app-1786645294385.png" },
     ],
     links: [
       {
