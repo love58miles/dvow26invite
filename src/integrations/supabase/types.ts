@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_settings: {
+        Row: {
+          ceremony_address: string
+          ceremony_map_url: string
+          ceremony_time: string
+          ceremony_venue: string
+          created_at: string
+          directions: string
+          id: string
+          parking_notes: string
+          reception_address: string
+          reception_map_url: string
+          reception_time: string
+          reception_venue: string
+          updated_at: string
+        }
+        Insert: {
+          ceremony_address?: string
+          ceremony_map_url?: string
+          ceremony_time?: string
+          ceremony_venue?: string
+          created_at?: string
+          directions?: string
+          id?: string
+          parking_notes?: string
+          reception_address?: string
+          reception_map_url?: string
+          reception_time?: string
+          reception_venue?: string
+          updated_at?: string
+        }
+        Update: {
+          ceremony_address?: string
+          ceremony_map_url?: string
+          ceremony_time?: string
+          ceremony_venue?: string
+          created_at?: string
+          directions?: string
+          id?: string
+          parking_notes?: string
+          reception_address?: string
+          reception_map_url?: string
+          reception_time?: string
+          reception_venue?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       guests: {
         Row: {
           access_code: string
@@ -23,12 +71,14 @@ export type Database = {
           first_opened_at: string | null
           full_name: string
           id: string
+          is_active: boolean
           meal_choice: string | null
           message: string | null
           plus_one_name: string | null
           responded_at: string | null
           seats: number
           table_assignment: string | null
+          updated_at: string
         }
         Insert: {
           access_code: string
@@ -38,12 +88,14 @@ export type Database = {
           first_opened_at?: string | null
           full_name: string
           id?: string
+          is_active?: boolean
           meal_choice?: string | null
           message?: string | null
           plus_one_name?: string | null
           responded_at?: string | null
           seats?: number
           table_assignment?: string | null
+          updated_at?: string
         }
         Update: {
           access_code?: string
@@ -53,12 +105,35 @@ export type Database = {
           first_opened_at?: string | null
           full_name?: string
           id?: string
+          is_active?: boolean
           meal_choice?: string | null
           message?: string | null
           plus_one_name?: string | null
           responded_at?: string | null
           seats?: number
           table_assignment?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -67,6 +142,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_admin: { Args: never; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       normalize_code: { Args: { _code: string }; Returns: string }
       submit_rsvp: {
         Args: {
@@ -95,7 +178,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -222,6 +305,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
