@@ -59,14 +59,20 @@ export async function verifyAccessCode(code: string): Promise<Guest | null> {
 export async function submitRsvp(code: string, input: RsvpInput): Promise<boolean> {
   const parsedCode = codeSchema.parse(code);
   const values = rsvpSchema.parse(input);
-  const { data, error } = await supabase.rpc("submit_rsvp", {
-    _code: parsedCode,
-    _attending: values.attending,
-    _meal_choice: values.mealChoice ?? undefined,
-    _plus_one_name: values.plusOneName ?? undefined,
-    _dietary_notes: values.dietaryNotes ?? undefined,
-    _message: values.message ?? undefined,
-  });
+  const args: {
+    _code: string;
+    _attending: boolean;
+    _meal_choice?: string;
+    _plus_one_name?: string;
+    _dietary_notes?: string;
+    _message?: string;
+  } = { _code: parsedCode, _attending: values.attending };
+  if (values.mealChoice) args._meal_choice = values.mealChoice;
+  if (values.plusOneName) args._plus_one_name = values.plusOneName;
+  if (values.dietaryNotes) args._dietary_notes = values.dietaryNotes;
+  if (values.message) args._message = values.message;
+
+  const { data, error } = await supabase.rpc("submit_rsvp", args);
   if (error) throw new Error("Your RSVP could not be saved. Please try again.");
   return Boolean(data);
 }
