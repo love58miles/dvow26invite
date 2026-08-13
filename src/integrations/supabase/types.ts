@@ -14,13 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      guests: {
+        Row: {
+          access_code: string
+          attending: boolean | null
+          created_at: string
+          dietary_notes: string | null
+          first_opened_at: string | null
+          full_name: string
+          id: string
+          meal_choice: string | null
+          message: string | null
+          plus_one_name: string | null
+          responded_at: string | null
+          seats: number
+          table_assignment: string | null
+        }
+        Insert: {
+          access_code: string
+          attending?: boolean | null
+          created_at?: string
+          dietary_notes?: string | null
+          first_opened_at?: string | null
+          full_name: string
+          id?: string
+          meal_choice?: string | null
+          message?: string | null
+          plus_one_name?: string | null
+          responded_at?: string | null
+          seats?: number
+          table_assignment?: string | null
+        }
+        Update: {
+          access_code?: string
+          attending?: boolean | null
+          created_at?: string
+          dietary_notes?: string | null
+          first_opened_at?: string | null
+          full_name?: string
+          id?: string
+          meal_choice?: string | null
+          message?: string | null
+          plus_one_name?: string | null
+          responded_at?: string | null
+          seats?: number
+          table_assignment?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      submit_rsvp: {
+        Args: {
+          _attending: boolean
+          _code: string
+          _dietary_notes?: string
+          _meal_choice?: string
+          _message?: string
+          _plus_one_name?: string
+        }
+        Returns: boolean
+      }
+      verify_access_code: {
+        Args: { _code: string }
+        Returns: {
+          attending: boolean
+          dietary_notes: string
+          full_name: string
+          meal_choice: string
+          message: string
+          plus_one_name: string
+          responded_at: string
+          seats: number
+          table_assignment: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
