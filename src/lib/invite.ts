@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const WEDDING = {
   brideAndGroom: "Amara & Chidi",
+  hashtag: "#DEVOW2026",
   date: "Saturday, 12 December 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
   reception: "6:00 PM — The Gilded Hall, Victoria Island",
