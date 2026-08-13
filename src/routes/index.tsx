@@ -166,7 +166,7 @@ function Index() {
 
         <footer className="mt-14 text-center text-xs text-muted-foreground">
           <div className="rule-gold mx-auto mb-5 w-24" />
-          With love, {WEDDING.brideAndGroom}
+          With love, {WEDDING.brideAndGroom} · {WEDDING.hashtag}
         </footer>
       </div>
     </main>
