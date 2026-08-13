@@ -67,6 +67,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      normalize_code: { Args: { _code: string }; Returns: string }
       submit_rsvp: {
         Args: {
           _attending: boolean
