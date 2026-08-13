@@ -62,10 +62,10 @@ export async function submitRsvp(code: string, input: RsvpInput): Promise<boolea
   const { data, error } = await supabase.rpc("submit_rsvp", {
     _code: parsedCode,
     _attending: values.attending,
-    _meal_choice: values.mealChoice ?? null,
-    _plus_one_name: values.plusOneName ?? null,
-    _dietary_notes: values.dietaryNotes ?? null,
-    _message: values.message ?? null,
+    _meal_choice: values.mealChoice ?? undefined,
+    _plus_one_name: values.plusOneName ?? undefined,
+    _dietary_notes: values.dietaryNotes ?? undefined,
+    _message: values.message ?? undefined,
   });
   if (error) throw new Error("Your RSVP could not be saved. Please try again.");
   return Boolean(data);
