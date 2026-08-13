@@ -2,7 +2,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 
 export const WEDDING = {
-  brideAndGroom: "Amara & Chidi",
+  brideAndGroom: "Victoria & Daniel",
   hashtag: "#DEVOW2026",
   date: "Saturday, 12 December 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
