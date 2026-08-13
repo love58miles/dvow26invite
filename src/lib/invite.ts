@@ -4,11 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 export const WEDDING = {
   brideAndGroom: "Victoria & Daniel",
   hashtag: "#DEVOW2026",
-  date: "Saturday, 12 December 2026",
+  date: "Saturday, 21 November 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
   reception: "6:00 PM — The Gilded Hall, Victoria Island",
   dressCode: "Black tie — lilac, purple or gold accents",
-  rsvpBy: "Friday, 20 November 2026",
+  rsvpBy: "Friday, 30 October 2026",
   schedule: [
     { time: "2:30 PM", title: "Guest arrival & seating" },
     { time: "3:00 PM", title: "Wedding ceremony" },
