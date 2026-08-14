@@ -151,12 +151,56 @@ function Index() {
                 <div className="rule-gold my-7 w-full" />
 
                 <dl className="grid gap-5 sm:grid-cols-2">
-                  <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={WEDDING.ceremony} />
-                  <Detail icon={<MapPin className="size-4" />} label="Reception" value={WEDDING.reception} />
+                  <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={ceremony} />
+                  <Detail icon={<MapPin className="size-4" />} label="Reception" value={reception} />
                   <Detail icon={<Shirt className="size-4" />} label="Dress code" value={WEDDING.dressCode} />
                   <Detail icon={<Users className="size-4" />} label="RSVP by" value={WEDDING.rsvpBy} />
                 </dl>
+
+                {(settings?.ceremony_map_url || settings?.reception_map_url) && (
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    {settings?.ceremony_map_url && (
+                      <a
+                        href={settings.ceremony_map_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-md border border-border px-3 py-2 text-xs tracking-widest uppercase text-gold transition hover:text-foreground"
+                      >
+                        Ceremony map
+                      </a>
+                    )}
+                    {settings?.reception_map_url && (
+                      <a
+                        href={settings.reception_map_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-md border border-border px-3 py-2 text-xs tracking-widest uppercase text-gold transition hover:text-foreground"
+                      >
+                        Reception map
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {(settings?.directions || settings?.parking_notes) && (
+                <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
+                  <h3 className="text-2xl">Getting there</h3>
+                  <div className="mt-5 space-y-5">
+                    {settings?.directions && (
+                      <Detail
+                        icon={<Compass className="size-4" />}
+                        label="Directions"
+                        value={settings.directions}
+                      />
+                    )}
+                    {settings?.parking_notes && (
+                      <Detail icon={<Car className="size-4" />} label="Parking" value={settings.parking_notes} />
+                    )}
+                  </div>
+                </div>
+              )}
+
 
               <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
                 <h3 className="text-2xl">Order of the day</h3>
