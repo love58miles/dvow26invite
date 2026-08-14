@@ -77,3 +77,29 @@ export async function submitRsvp(code: string, input: RsvpInput): Promise<boolea
   if (error) throw new Error("Your RSVP could not be saved. Please try again.");
   return Boolean(data);
 }
+
+export type PublicEventSettings = {
+  ceremony_venue: string;
+  ceremony_address: string;
+  ceremony_time: string;
+  ceremony_map_url: string;
+  reception_venue: string;
+  reception_address: string;
+  reception_time: string;
+  reception_map_url: string;
+  directions: string;
+  parking_notes: string;
+};
+
+export async function fetchPublicEventSettings(): Promise<PublicEventSettings | null> {
+  const { data, error } = await supabase
+    .from("event_settings")
+    .select(
+      "ceremony_venue, ceremony_address, ceremony_time, ceremony_map_url, reception_venue, reception_address, reception_time, reception_map_url, directions, parking_notes",
+    )
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (error) return null;
+  return data;
+}
