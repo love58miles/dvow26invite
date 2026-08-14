@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, MapPin, Shirt, Users, LogOut } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { CalendarDays, MapPin, Shirt, Users, LogOut, Car, Compass } from "lucide-react";
 import heroImage from "@/assets/wedding-hero.jpg";
 import { CodeGate } from "@/components/invite/CodeGate";
 import { RsvpForm } from "@/components/invite/RsvpForm";
-import { WEDDING, submitRsvp, verifyAccessCode, type Guest, type RsvpInput } from "@/lib/invite";
+import {
+  WEDDING,
+  fetchPublicEventSettings,
+  submitRsvp,
+  verifyAccessCode,
+  type Guest,
+  type RsvpInput,
+} from "@/lib/invite";
 
 const title = `${WEDDING.brideAndGroom} — Private Wedding Invitation`;
 const description = `Enter your personal access code to view the invitation for ${WEDDING.brideAndGroom} on ${WEDDING.date} and RSVP.`;
