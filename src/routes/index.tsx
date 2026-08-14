@@ -186,7 +186,7 @@ function Index() {
               {(settings?.directions || settings?.parking_notes) && (
                 <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
                   <h3 className="text-2xl">Getting there</h3>
-                  <div className="mt-5 space-y-5">
+                  <dl className="mt-5 space-y-5">
                     {settings?.directions && (
                       <Detail
                         icon={<Compass className="size-4" />}
@@ -197,7 +197,7 @@ function Index() {
                     {settings?.parking_notes && (
                       <Detail icon={<Car className="size-4" />} label="Parking" value={settings.parking_notes} />
                     )}
-                  </div>
+                  </dl>
                 </div>
               )}
 
