@@ -39,6 +39,23 @@ function Index() {
   const [rsvpError, setRsvpError] = useState<string | null>(null);
   const [rsvpPending, setRsvpPending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const { data: settings } = useQuery({
+    queryKey: ["public-event-settings"],
+    queryFn: fetchPublicEventSettings,
+    staleTime: 60_000,
+  });
+
+  const ceremony = settings?.ceremony_venue
+    ? [settings.ceremony_time, settings.ceremony_venue, settings.ceremony_address]
+        .filter(Boolean)
+        .join(" — ")
+    : WEDDING.ceremony;
+  const reception = settings?.reception_venue
+    ? [settings.reception_time, settings.reception_venue, settings.reception_address]
+        .filter(Boolean)
+        .join(" — ")
+    : WEDDING.reception;
+
 
   const unlock = async (value: string) => {
     setGatePending(true);
