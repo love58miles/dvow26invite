@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, MapPin, Shirt, Users, LogOut } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { CalendarDays, MapPin, Shirt, Users, LogOut, Car, Compass } from "lucide-react";
 import heroImage from "@/assets/wedding-hero.jpg";
 import { CodeGate } from "@/components/invite/CodeGate";
 import { RsvpForm } from "@/components/invite/RsvpForm";
-import { WEDDING, submitRsvp, verifyAccessCode, type Guest, type RsvpInput } from "@/lib/invite";
+import {
+  WEDDING,
+  fetchPublicEventSettings,
+  submitRsvp,
+  verifyAccessCode,
+  type Guest,
+  type RsvpInput,
+} from "@/lib/invite";
 
 const title = `${WEDDING.brideAndGroom} — Private Wedding Invitation`;
 const description = `Enter your personal access code to view the invitation for ${WEDDING.brideAndGroom} on ${WEDDING.date} and RSVP.`;
@@ -31,6 +39,23 @@ function Index() {
   const [rsvpError, setRsvpError] = useState<string | null>(null);
   const [rsvpPending, setRsvpPending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const { data: settings } = useQuery({
+    queryKey: ["public-event-settings"],
+    queryFn: fetchPublicEventSettings,
+    staleTime: 60_000,
+  });
+
+  const ceremony = settings?.ceremony_venue
+    ? [settings.ceremony_time, settings.ceremony_venue, settings.ceremony_address]
+        .filter(Boolean)
+        .join(" — ")
+    : WEDDING.ceremony;
+  const reception = settings?.reception_venue
+    ? [settings.reception_time, settings.reception_venue, settings.reception_address]
+        .filter(Boolean)
+        .join(" — ")
+    : WEDDING.reception;
+
 
   const unlock = async (value: string) => {
     setGatePending(true);
@@ -126,12 +151,56 @@ function Index() {
                 <div className="rule-gold my-7 w-full" />
 
                 <dl className="grid gap-5 sm:grid-cols-2">
-                  <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={WEDDING.ceremony} />
-                  <Detail icon={<MapPin className="size-4" />} label="Reception" value={WEDDING.reception} />
+                  <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={ceremony} />
+                  <Detail icon={<MapPin className="size-4" />} label="Reception" value={reception} />
                   <Detail icon={<Shirt className="size-4" />} label="Dress code" value={WEDDING.dressCode} />
                   <Detail icon={<Users className="size-4" />} label="RSVP by" value={WEDDING.rsvpBy} />
                 </dl>
+
+                {(settings?.ceremony_map_url || settings?.reception_map_url) && (
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    {settings?.ceremony_map_url && (
+                      <a
+                        href={settings.ceremony_map_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-md border border-border px-3 py-2 text-xs tracking-widest uppercase text-gold transition hover:text-foreground"
+                      >
+                        Ceremony map
+                      </a>
+                    )}
+                    {settings?.reception_map_url && (
+                      <a
+                        href={settings.reception_map_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-md border border-border px-3 py-2 text-xs tracking-widest uppercase text-gold transition hover:text-foreground"
+                      >
+                        Reception map
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {(settings?.directions || settings?.parking_notes) && (
+                <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
+                  <h3 className="text-2xl">Getting there</h3>
+                  <dl className="mt-5 space-y-5">
+                    {settings?.directions && (
+                      <Detail
+                        icon={<Compass className="size-4" />}
+                        label="Directions"
+                        value={settings.directions}
+                      />
+                    )}
+                    {settings?.parking_notes && (
+                      <Detail icon={<Car className="size-4" />} label="Parking" value={settings.parking_notes} />
+                    )}
+                  </dl>
+                </div>
+              )}
+
 
               <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
                 <h3 className="text-2xl">Order of the day</h3>
