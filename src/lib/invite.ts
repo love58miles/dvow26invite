@@ -2,7 +2,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 
 export const WEDDING = {
-  brideAndGroom: "Victoria & Daniel",
+  brideAndGroom: "Victoria Oyiemeafu Agbose-Akinwole & Daniel Osigie Iyeduala",
   brideFullName: "Victoria Oyiemeafu Agbose-Akinwole",
   groomFullName: "Daniel Osigie Iyeduala",
   families: ["The Iyeduala Family", "The Agbose-Akinwole Family"],
