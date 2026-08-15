@@ -404,6 +404,7 @@ function VenueTab({
       </div>
 
       <div className="mt-4 grid gap-4">
+        <Text label="Dress code" value={form.dress_code} onChange={set("dress_code")} />
         <Area label="Directions" value={form.directions} onChange={set("directions")} rows={4} />
         <Area label="Parking notes" value={form.parking_notes} onChange={set("parking_notes")} rows={2} />
       </div>

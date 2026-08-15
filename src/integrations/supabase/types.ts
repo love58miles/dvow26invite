@@ -22,6 +22,7 @@ export type Database = {
           ceremony_venue: string
           created_at: string
           directions: string
+          dress_code: string
           id: string
           parking_notes: string
           reception_address: string
@@ -37,6 +38,7 @@ export type Database = {
           ceremony_venue?: string
           created_at?: string
           directions?: string
+          dress_code?: string
           id?: string
           parking_notes?: string
           reception_address?: string
@@ -52,6 +54,7 @@ export type Database = {
           ceremony_venue?: string
           created_at?: string
           directions?: string
+          dress_code?: string
           id?: string
           parking_notes?: string
           reception_address?: string
