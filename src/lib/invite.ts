@@ -3,6 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const WEDDING = {
   brideAndGroom: "Victoria & Daniel",
+  brideFullName: "Victoria Oyiemeafu Agbose-Akinwole",
+  groomFullName: "Daniel Osigie Iyeduala",
+  families: ["The Iyeduala Family", "The Agbose-Akinwole Family"],
   hashtag: "#DEVOW2026",
   date: "Saturday, 21 November 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
