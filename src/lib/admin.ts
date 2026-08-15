@@ -30,6 +30,7 @@ export const settingsSchema = z.object({
   reception_map_url: z.string().trim().max(500),
   directions: z.string().trim().max(1500),
   parking_notes: z.string().trim().max(600),
+  dress_code: z.string().trim().max(240),
 });
 
 export type SettingsInput = z.infer<typeof settingsSchema>;
