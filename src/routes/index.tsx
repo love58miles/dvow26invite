@@ -57,7 +57,6 @@ function Index() {
       }
       setGuest(found);
       setCode(value);
-      setSaved(Boolean(found.responded_at));
     } catch (err) {
       setGateError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -65,31 +64,9 @@ function Index() {
     }
   };
 
-  const sendRsvp = async (input: RsvpInput) => {
-    if (!code) return;
-    setRsvpPending(true);
-    setRsvpError(null);
-    try {
-      const ok = await submitRsvp(code, input);
-      if (!ok) {
-        setRsvpError("We couldn't match your access code. Please re-enter it.");
-        return;
-      }
-      setSaved(true);
-      const refreshed = await verifyAccessCode(code);
-      if (refreshed) setGuest(refreshed);
-    } catch (err) {
-      setRsvpError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
-      setRsvpPending(false);
-    }
-  };
-
   const lock = () => {
     setGuest(null);
     setCode(null);
-    setSaved(false);
-    setRsvpError(null);
   };
 
   return (
