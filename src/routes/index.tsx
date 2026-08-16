@@ -116,7 +116,14 @@ function Index() {
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center px-5 py-14 sm:px-8">
         <header className="text-center">
-          <p className="text-[11px] tracking-luxe uppercase text-gold">The wedding of</p>
+          <p className="text-[11px] tracking-luxe uppercase text-gold">
+            {WEDDING.families.join(" · ")}
+          </p>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            {WEDDING.greeting}
+          </p>
+          <div className="rule-gold mx-auto mt-6 w-40" />
+          <p className="mt-6 text-[11px] tracking-luxe uppercase text-gold">The wedding of</p>
           <h1 className="mt-4 text-4xl leading-tight text-gilded sm:text-5xl">
             {WEDDING.brideFullName}
             <span className="mx-3 text-lilac">&amp;</span>
@@ -124,11 +131,7 @@ function Index() {
           </h1>
 
           <p className="mt-3 text-sm tracking-[0.25em] text-lilac">{WEDDING.hashtag}</p>
-          <div className="rule-gold mx-auto mt-6 w-40" />
           <p className="mt-5 text-sm text-muted-foreground">{WEDDING.date}</p>
-          <p className="mt-4 text-[11px] tracking-luxe uppercase text-gold">
-            {WEDDING.families.join(" · ")}
-          </p>
         </header>
 
         <section className="mt-12 flex w-full flex-1 flex-col items-center">
