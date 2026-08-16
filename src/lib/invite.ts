@@ -6,7 +6,9 @@ export const WEDDING = {
   brideFullName: "Victoria Oyiemeafu Agbose-Akinwole",
   groomFullName: "Daniel Osigie Iyeduala",
   families: ["The Iyeduala Family", "The Agbose-Akinwole Family"],
-  hashtag: "#DEVOW2026",
+  hashtag: "#DVow2026",
+  greeting:
+    "With hearts full of gratitude and joy, we warmly welcome you to share in our celebration of love.",
   date: "Saturday, 21 November 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
   reception: "6:00 PM — The Gilded Hall, Victoria Island",
@@ -92,13 +94,14 @@ export type PublicEventSettings = {
   reception_map_url: string;
   directions: string;
   parking_notes: string;
+  dress_code: string;
 };
 
 export async function fetchPublicEventSettings(): Promise<PublicEventSettings | null> {
   const { data, error } = await supabase
     .from("event_settings")
     .select(
-      "ceremony_venue, ceremony_address, ceremony_time, ceremony_map_url, reception_venue, reception_address, reception_time, reception_map_url, directions, parking_notes",
+      "ceremony_venue, ceremony_address, ceremony_time, ceremony_map_url, reception_venue, reception_address, reception_time, reception_map_url, directions, parking_notes, dress_code",
     )
     .order("created_at", { ascending: true })
     .limit(1)

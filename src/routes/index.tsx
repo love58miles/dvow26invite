@@ -1,21 +1,13 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, MapPin, Shirt, Users, LogOut, Car, Compass } from "lucide-react";
+import { CalendarDays, MapPin, Shirt, LogOut, Car, Compass } from "lucide-react";
 import heroImage from "@/assets/wedding-hero.jpg";
 import { CodeGate } from "@/components/invite/CodeGate";
-import { RsvpForm } from "@/components/invite/RsvpForm";
-import {
-  WEDDING,
-  fetchPublicEventSettings,
-  submitRsvp,
-  verifyAccessCode,
-  type Guest,
-  type RsvpInput,
-} from "@/lib/invite";
+import { WEDDING, fetchPublicEventSettings, verifyAccessCode, type Guest } from "@/lib/invite";
 
 const title = `${WEDDING.brideAndGroom} — Private Wedding Invitation`;
-const description = `Enter your personal access code to view the invitation for ${WEDDING.brideAndGroom} on ${WEDDING.date} and RSVP.`;
+const description = `Enter your personal access code to view the private wedding invitation for ${WEDDING.brideAndGroom} on ${WEDDING.date}.`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,9 +28,6 @@ function Index() {
   const [code, setCode] = useState<string | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
   const [gatePending, setGatePending] = useState(false);
-  const [rsvpError, setRsvpError] = useState<string | null>(null);
-  const [rsvpPending, setRsvpPending] = useState(false);
-  const [saved, setSaved] = useState(false);
   const { data: settings } = useQuery({
     queryKey: ["public-event-settings"],
     queryFn: fetchPublicEventSettings,
@@ -68,7 +57,6 @@ function Index() {
       }
       setGuest(found);
       setCode(value);
-      setSaved(Boolean(found.responded_at));
     } catch (err) {
       setGateError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -76,31 +64,9 @@ function Index() {
     }
   };
 
-  const sendRsvp = async (input: RsvpInput) => {
-    if (!code) return;
-    setRsvpPending(true);
-    setRsvpError(null);
-    try {
-      const ok = await submitRsvp(code, input);
-      if (!ok) {
-        setRsvpError("We couldn't match your access code. Please re-enter it.");
-        return;
-      }
-      setSaved(true);
-      const refreshed = await verifyAccessCode(code);
-      if (refreshed) setGuest(refreshed);
-    } catch (err) {
-      setRsvpError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
-      setRsvpPending(false);
-    }
-  };
-
   const lock = () => {
     setGuest(null);
     setCode(null);
-    setSaved(false);
-    setRsvpError(null);
   };
 
   return (
@@ -116,7 +82,14 @@ function Index() {
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center px-5 py-14 sm:px-8">
         <header className="text-center">
-          <p className="text-[11px] tracking-luxe uppercase text-gold">The wedding of</p>
+          <p className="text-[11px] tracking-luxe uppercase text-gold">
+            {WEDDING.families.join(" · ")}
+          </p>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            {WEDDING.greeting}
+          </p>
+          <div className="rule-gold mx-auto mt-6 w-40" />
+          <p className="mt-6 text-[11px] tracking-luxe uppercase text-gold">The wedding of</p>
           <h1 className="mt-4 text-4xl leading-tight text-gilded sm:text-5xl">
             {WEDDING.brideFullName}
             <span className="mx-3 text-lilac">&amp;</span>
@@ -124,11 +97,7 @@ function Index() {
           </h1>
 
           <p className="mt-3 text-sm tracking-[0.25em] text-lilac">{WEDDING.hashtag}</p>
-          <div className="rule-gold mx-auto mt-6 w-40" />
           <p className="mt-5 text-sm text-muted-foreground">{WEDDING.date}</p>
-          <p className="mt-4 text-[11px] tracking-luxe uppercase text-gold">
-            {WEDDING.families.join(" · ")}
-          </p>
         </header>
 
         <section className="mt-12 flex w-full flex-1 flex-col items-center">
@@ -160,8 +129,11 @@ function Index() {
                 <dl className="grid gap-5 sm:grid-cols-2">
                   <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={ceremony} />
                   <Detail icon={<MapPin className="size-4" />} label="Reception" value={reception} />
-                  <Detail icon={<Shirt className="size-4" />} label="Dress code" value={WEDDING.dressCode} />
-                  <Detail icon={<Users className="size-4" />} label="RSVP by" value={WEDDING.rsvpBy} />
+                  <Detail
+                    icon={<Shirt className="size-4" />}
+                    label="Dress code"
+                    value={settings?.dress_code || WEDDING.dressCode}
+                  />
                 </dl>
 
                 {(settings?.ceremony_map_url || settings?.reception_map_url) && (
@@ -207,35 +179,6 @@ function Index() {
                   </dl>
                 </div>
               )}
-
-
-              <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
-                <h3 className="text-2xl">Order of the day</h3>
-                <ul className="mt-5 space-y-4">
-                  {WEDDING.schedule.map((item) => (
-                    <li key={item.time} className="flex gap-5 text-sm">
-                      <span className="w-20 shrink-0 text-gold">{item.time}</span>
-                      <span className="text-muted-foreground">{item.title}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
-                <h3 className="text-2xl">RSVP</h3>
-                <p className="mt-2 mb-6 text-sm text-muted-foreground">
-                  {saved
-                    ? "You've already responded — you can change your answer any time before the RSVP date."
-                    : `Kindly respond by ${WEDDING.rsvpBy}.`}
-                </p>
-                <RsvpForm
-                  guest={guest}
-                  onSubmit={sendRsvp}
-                  pending={rsvpPending}
-                  error={rsvpError}
-                  saved={saved}
-                />
-              </div>
             </div>
           )}
         </section>
