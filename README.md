@@ -27,3 +27,9 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+- Supabase (database, auth, guest access codes)
+
+## Self-hosting
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for exporting this project to your own host and
+domain, including environment variables (`.env.example`) and database migrations.
