@@ -163,8 +163,11 @@ function Index() {
                 <dl className="grid gap-5 sm:grid-cols-2">
                   <Detail icon={<CalendarDays className="size-4" />} label="Ceremony" value={ceremony} />
                   <Detail icon={<MapPin className="size-4" />} label="Reception" value={reception} />
-                  <Detail icon={<Shirt className="size-4" />} label="Dress code" value={WEDDING.dressCode} />
-                  <Detail icon={<Users className="size-4" />} label="RSVP by" value={WEDDING.rsvpBy} />
+                  <Detail
+                    icon={<Shirt className="size-4" />}
+                    label="Dress code"
+                    value={settings?.dress_code || WEDDING.dressCode}
+                  />
                 </dl>
 
                 {(settings?.ceremony_map_url || settings?.reception_map_url) && (
