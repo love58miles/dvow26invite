@@ -6,7 +6,9 @@ export const WEDDING = {
   brideFullName: "Victoria Oyiemeafu Agbose-Akinwole",
   groomFullName: "Daniel Osigie Iyeduala",
   families: ["The Iyeduala Family", "The Agbose-Akinwole Family"],
-  hashtag: "#DEVOW2026",
+  hashtag: "#DVow2026",
+  greeting:
+    "With hearts full of gratitude and joy, we warmly welcome you to share in our celebration of love.",
   date: "Saturday, 21 November 2026",
   ceremony: "3:00 PM — The Rose Chapel, Ikoyi, Lagos",
   reception: "6:00 PM — The Gilded Hall, Victoria Island",
