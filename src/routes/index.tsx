@@ -28,9 +28,6 @@ function Index() {
   const [code, setCode] = useState<string | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
   const [gatePending, setGatePending] = useState(false);
-  const [rsvpError, setRsvpError] = useState<string | null>(null);
-  const [rsvpPending, setRsvpPending] = useState(false);
-  const [saved, setSaved] = useState(false);
   const { data: settings } = useQuery({
     queryKey: ["public-event-settings"],
     queryFn: fetchPublicEventSettings,
