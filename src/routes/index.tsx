@@ -213,35 +213,6 @@ function Index() {
                   </dl>
                 </div>
               )}
-
-
-              <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
-                <h3 className="text-2xl">Order of the day</h3>
-                <ul className="mt-5 space-y-4">
-                  {WEDDING.schedule.map((item) => (
-                    <li key={item.time} className="flex gap-5 text-sm">
-                      <span className="w-20 shrink-0 text-gold">{item.time}</span>
-                      <span className="text-muted-foreground">{item.title}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="rounded-xl border border-border bg-card/80 p-7 shadow-panel backdrop-blur-md sm:p-9">
-                <h3 className="text-2xl">RSVP</h3>
-                <p className="mt-2 mb-6 text-sm text-muted-foreground">
-                  {saved
-                    ? "You've already responded — you can change your answer any time before the RSVP date."
-                    : `Kindly respond by ${WEDDING.rsvpBy}.`}
-                </p>
-                <RsvpForm
-                  guest={guest}
-                  onSubmit={sendRsvp}
-                  pending={rsvpPending}
-                  error={rsvpError}
-                  saved={saved}
-                />
-              </div>
             </div>
           )}
         </section>
