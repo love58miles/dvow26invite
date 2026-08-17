@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, MapPin, Shirt, LogOut, Car, Compass } from "lucide-react";
+import { CalendarDays, MapPin, Shirt, LogOut, Car, Compass, Download } from "lucide-react";
+import { toast } from "sonner";
+import { downloadInvitationCard } from "@/lib/invitation-card";
 import heroImage from "@/assets/wedding-hero.jpg";
 import { CodeGate } from "@/components/invite/CodeGate";
 import { WEDDING, fetchPublicEventSettings, verifyAccessCode, type Guest } from "@/lib/invite";
@@ -28,6 +30,7 @@ function Index() {
   const [code, setCode] = useState<string | null>(null);
   const [gateError, setGateError] = useState<string | null>(null);
   const [gatePending, setGatePending] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const { data: settings } = useQuery({
     queryKey: ["public-event-settings"],
     queryFn: fetchPublicEventSettings,
@@ -115,6 +118,32 @@ function Index() {
                       {guest.table_assignment ? ` · ${guest.table_assignment}` : ""}
                     </p>
                   </div>
+                  <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        setDownloading(true);
+                        await downloadInvitationCard({
+                          guestName: guest.full_name,
+                          seats: guest.seats,
+                          tableAssignment: guest.table_assignment,
+                          ceremony,
+                          reception,
+                          dressCode: settings?.dress_code || WEDDING.dressCode,
+                        });
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : "Download failed");
+                      } finally {
+                        setDownloading(false);
+                      }
+                    }}
+                    disabled={downloading}
+                    className="flex items-center gap-2 rounded-md border border-gold/50 px-3 py-2 text-xs tracking-widest uppercase text-gold transition hover:text-foreground disabled:opacity-60"
+                  >
+                    <Download className="size-3.5" aria-hidden="true" />
+                    {downloading ? "Preparing…" : "Download invitation"}
+                  </button>
                   <button
                     type="button"
                     onClick={lock}
@@ -122,6 +151,7 @@ function Index() {
                   >
                     <LogOut className="size-3.5" aria-hidden="true" /> Lock
                   </button>
+                  </div>
                 </div>
 
                 <div className="rule-gold my-7 w-full" />

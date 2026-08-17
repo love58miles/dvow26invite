@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { LogOut, Plus, RefreshCw, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { SAMPLE_CSV, importGuests, parseGuestCsv } from "@/lib/guest-csv";
 import {
   addGuest,
   claimAdmin,
@@ -186,6 +187,10 @@ function GuestsTab({ guests }: { guests: ReturnType<typeof useQuery<Awaited<Retu
         <Stat label="Seats reserved" value={totalSeats} />
         <Stat label="Confirmed yes" value={confirmed} />
       </div>
+
+      <CsvUpload onDone={invalidate} />
+
+
 
       <form
         className={panel}
@@ -466,6 +471,100 @@ function Stat({ label, value }: { label: string; value: number }) {
     <div className="rounded-xl border border-border bg-card/70 p-5 backdrop-blur-md">
       <p className={labelCls}>{label}</p>
       <p className="mt-2 text-3xl text-gilded">{value}</p>
+    </div>
+  );
+}
+
+function CsvUpload({ onDone }: { onDone: () => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [report, setReport] = useState<string[] | null>(null);
+
+  const handleFile = async (file: File) => {
+    setBusy(true);
+    setReport(null);
+    try {
+      const text = await file.text();
+      const parsed = parseGuestCsv(text);
+      if (parsed.rows.length === 0) {
+        setReport(parsed.errors.map((e) => (e.rowNumber ? `Row ${e.rowNumber}: ${e.message}` : e.message)));
+        toast.error("No valid guest rows found in that file.");
+        return;
+      }
+      const result = await importGuests(parsed.rows);
+      const lines = [
+        `${result.inserted} guest${result.inserted === 1 ? "" : "s"} imported.`,
+        ...(result.skipped ? [`${result.skipped} skipped (duplicate codes).`] : []),
+        ...parsed.errors.map((e) => `Row ${e.rowNumber}: ${e.message}`),
+        ...result.failures,
+      ];
+      setReport(lines);
+      if (result.inserted > 0) toast.success(`${result.inserted} guests imported`);
+      else toast.error("Nothing was imported.");
+      onDone();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not read that file.");
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
+  const downloadTemplate = () => {
+    const url = URL.createObjectURL(new Blob([SAMPLE_CSV], { type: "text/csv" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "guest-list-template.csv";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  };
+
+  return (
+    <div className={panel}>
+      <h2 className="text-2xl">Import guest list (CSV)</h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        Upload a CSV with columns <span className="text-gold">name</span>,{" "}
+        <span className="text-gold">access code</span>, and optionally{" "}
+        <span className="text-gold">seats</span> and <span className="text-gold">table</span>. Existing
+        codes are skipped.
+      </p>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".csv,text/csv"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void handleFile(file);
+          }}
+        />
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+          className="flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-xs tracking-luxe uppercase text-primary-foreground transition hover:bg-primary/90 disabled:opacity-60"
+        >
+          <Upload className="size-3.5" aria-hidden="true" />
+          {busy ? "Importing…" : "Choose CSV file"}
+        </button>
+        <button
+          type="button"
+          onClick={downloadTemplate}
+          className="rounded-md border border-border px-4 py-2.5 text-xs tracking-luxe uppercase text-muted-foreground transition hover:text-foreground"
+        >
+          Download template
+        </button>
+      </div>
+
+      {report && (
+        <ul className="mt-5 space-y-1 text-sm text-muted-foreground">
+          {report.map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
