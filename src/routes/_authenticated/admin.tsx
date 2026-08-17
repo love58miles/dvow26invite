@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { LogOut, Plus, RefreshCw, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { SAMPLE_CSV, importGuests, parseGuestCsv } from "@/lib/guest-csv";
 import {
   addGuest,
   claimAdmin,
@@ -186,6 +187,10 @@ function GuestsTab({ guests }: { guests: ReturnType<typeof useQuery<Awaited<Retu
         <Stat label="Seats reserved" value={totalSeats} />
         <Stat label="Confirmed yes" value={confirmed} />
       </div>
+
+      <CsvUpload onDone={invalidate} />
+
+
 
       <form
         className={panel}
