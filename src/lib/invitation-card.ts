@@ -10,7 +10,7 @@ export type InvitationCardInput = {
 };
 
 const WIDTH = 1240;
-const HEIGHT = 1754;
+const MIN_HEIGHT = 1754;
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const words = text.split(/\s+/).filter(Boolean);
@@ -29,21 +29,7 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): st
   return lines;
 }
 
-export async function downloadInvitationCard(input: InvitationCardInput) {
-  const canvas = document.createElement("canvas");
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Your browser can't generate the invitation image.");
-
-  if (document.fonts?.ready) {
-    try {
-      await document.fonts.ready;
-    } catch {
-      /* fonts are optional */
-    }
-  }
-
+function paint(ctx: CanvasRenderingContext2D, input: InvitationCardInput, HEIGHT: number): number {
   const serif = '"Cormorant Garamond", Georgia, serif';
   const sans = '"Karla", system-ui, sans-serif';
   const gold = "#d9b45b";
@@ -169,7 +155,50 @@ export async function downloadInvitationCard(input: InvitationCardInput) {
 
   ctx.fillStyle = "rgba(217, 180, 91, 0.85)";
   ctx.font = `26px ${sans}`;
-  ctx.fillText("Please present this invitation on arrival", WIDTH / 2, HEIGHT - 130);
+  ctx.fillText("Please present this invitation on arrival", WIDTH / 2, HEIGHT - 110);
+
+  return y;
+}
+
+function measuringContext(ctx: CanvasRenderingContext2D): CanvasRenderingContext2D {
+  const noop = () => undefined;
+  return new Proxy(ctx, {
+    get(target, prop, receiver) {
+      if (prop === "createRadialGradient") return () => ({ addColorStop: noop });
+      if (["fillText", "fillRect", "strokeRect", "stroke", "beginPath", "moveTo", "lineTo"].includes(String(prop))) {
+        return noop;
+      }
+      const value = Reflect.get(target, prop, receiver);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+    set(target, prop, value) {
+      Reflect.set(target, prop, value);
+      return true;
+    },
+  }) as CanvasRenderingContext2D;
+}
+
+export async function downloadInvitationCard(input: InvitationCardInput) {
+  if (document.fonts?.ready) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      /* fonts are optional */
+    }
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = WIDTH;
+  canvas.height = MIN_HEIGHT;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Your browser can't generate the invitation image.");
+
+  const contentBottom = paint(measuringContext(ctx), input, MIN_HEIGHT);
+  const height = Math.max(MIN_HEIGHT, Math.round(contentBottom + 220));
+  canvas.height = height;
+  const drawCtx = canvas.getContext("2d");
+  if (!drawCtx) throw new Error("Your browser can't generate the invitation image.");
+  paint(drawCtx, input, height);
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
   if (!blob) throw new Error("The invitation image could not be created.");
